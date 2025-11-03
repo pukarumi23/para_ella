@@ -1,919 +1,111 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Termometría Física - Principios y Fundamentos</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        /* Estilos generales */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        :root {
-            --neon-red: #ff3333;
-            --neon-orange: #ff7700;
-            --neon-yellow: #ffff00;
-            --neon-blue: #00a2ff;
-            --neon-cyan: #00ffff;
-            --dark-bg: #0a0a16;
-        }
-        
-        body {
-            background-color: var(--dark-bg);
-            color: #fff;
-            line-height: 1.6;
-            overflow-x: hidden;
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(255, 100, 100, 0.1) 0%, transparent 20%),
-                radial-gradient(circle at 90% 80%, rgba(255, 200, 50, 0.1) 0%, transparent 20%),
-                radial-gradient(circle at 50% 50%, rgba(255, 150, 100, 0.05) 0%, transparent 50%);
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-        
-        /* Efectos de texto neon */
-        .neon-text {
-            color: #fff;
-            text-shadow: 
-                0 0 5px var(--neon-red),
-                0 0 10px var(--neon-red),
-                0 0 15px var(--neon-red),
-                0 0 20px var(--neon-red),
-                0 0 35px var(--neon-red),
-                0 0 40px var(--neon-red);
-            animation: neon-flicker 3s infinite alternate;
-        }
-        
-        .neon-orange {
-            color: #fff;
-            text-shadow: 
-                0 0 5px var(--neon-orange),
-                0 0 10px var(--neon-orange),
-                0 0 15px var(--neon-orange),
-                0 0 20px var(--neon-orange),
-                0 0 35px var(--neon-orange),
-                0 0 40px var(--neon-orange);
-        }
-        
-        .neon-yellow {
-            color: #fff;
-            text-shadow: 
-                0 0 5px var(--neon-yellow),
-                0 0 10px var(--neon-yellow),
-                0 0 15px var(--neon-yellow),
-                0 0 20px var(--neon-yellow),
-                0 0 35px var(--neon-yellow),
-                0 0 40px var(--neon-yellow);
-        }
-        
-        .neon-blue {
-            color: #fff;
-            text-shadow: 
-                0 0 5px var(--neon-blue),
-                0 0 10px var(--neon-blue),
-                0 0 15px var(--neon-blue),
-                0 0 20px var(--neon-blue),
-                0 0 35px var(--neon-blue),
-                0 0 40px var(--neon-blue);
-        }
-        
-        .neon-cyan {
-            color: #fff;
-            text-shadow: 
-                0 0 5px var(--neon-cyan),
-                0 0 10px var(--neon-cyan),
-                0 0 15px var(--neon-cyan),
-                0 0 20px var(--neon-cyan),
-                0 0 35px var(--neon-cyan),
-                0 0 40px var(--neon-cyan);
-        }
-        
-        @keyframes neon-flicker {
-            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
-                text-shadow: 
-                    0 0 5px var(--neon-red),
-                    0 0 10px var(--neon-red),
-                    0 0 15px var(--neon-red),
-                    0 0 20px var(--neon-red),
-                    0 0 35px var(--neon-red),
-                    0 0 40px var(--neon-red);
-            }
-            20%, 24%, 55% {
-                text-shadow: none;
-            }
-        }
-        
-        /* Header */
-        header {
-            background: rgba(10, 10, 22, 0.8);
-            backdrop-filter: blur(10px);
-            padding: 20px 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            border-bottom: 1px solid rgba(255, 100, 100, 0.3);
-            box-shadow: 0 0 15px rgba(255, 100, 100, 0.5);
-        }
-        
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .logo {
-            font-size: 2.2rem;
-            font-weight: bold;
-        }
-        
-        nav ul {
-            display: flex;
-            list-style: none;
-            gap: 25px;
-        }
-        
-        nav a {
-            color: #fff;
-            text-decoration: none;
-            font-weight: 600;
-            padding: 8px 15px;
-            border-radius: 20px;
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        nav a:hover {
-            background: rgba(255, 100, 100, 0.2);
-            box-shadow: 0 0 10px rgba(255, 100, 100, 0.7);
-        }
-        
-        nav a::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--neon-red), transparent);
-            transform: translateX(-100%);
-            transition: transform 0.5s;
-        }
-        
-        nav a:hover::after {
-            transform: translateX(100%);
-        }
-        
-        /* Hero Section */
-        .hero {
-            padding: 100px 0;
-            text-align: center;
-            position: relative;
-        }
-        
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at center, rgba(255, 100, 100, 0.1) 0%, transparent 70%);
-            z-index: -1;
-        }
-        
-        .hero-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 30px;
-        }
-        
-        .hero-image {
-            width: 220px;
-            height: 220px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--neon-red), var(--neon-orange));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 5rem;
-            box-shadow: 
-                0 0 20px var(--neon-red),
-                0 0 40px var(--neon-red),
-                inset 0 0 20px rgba(255, 255, 255, 0.3);
-            animation: rotate 20s linear infinite;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .hero-image::before {
-            content: '';
-            position: absolute;
-            width: 150%;
-            height: 150%;
-            background: conic-gradient(transparent, var(--neon-red), transparent 30%);
-            animation: rotate 3s linear infinite;
-        }
-        
-        .hero-image::after {
-            content: '';
-            position: absolute;
-            width: 210px;
-            height: 210px;
-            background: var(--dark-bg);
-            border-radius: 50%;
-        }
-        
-        .hero h1 {
-            font-size: 3rem;
-            margin-bottom: 10px;
-        }
-        
-        .hero p {
-            font-size: 1.2rem;
-            max-width: 700px;
-            margin: 0 auto;
-            color: #ccc;
-        }
-        
-        /* Sections */
-        section {
-            padding: 80px 0;
-        }
-        
-        .section-title {
-            text-align: center;
-            margin-bottom: 50px;
-            font-size: 2.2rem;
-            position: relative;
-        }
-        
-        .section-title::after {
-            content: '';
-            display: block;
-            width: 100px;
-            height: 4px;
-            background: linear-gradient(to right, var(--neon-red), var(--neon-orange));
-            margin: 15px auto;
-            border-radius: 2px;
-            box-shadow: 0 0 10px var(--neon-red);
-        }
-        
-        /* Fundamentals Section */
-        .fundamentals-content {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 40px;
-            align-items: center;
-        }
-        
-        .fundamentals-text {
-            flex: 1;
-            min-width: 300px;
-            background: rgba(20, 20, 40, 0.6);
-            padding: 30px;
-            border-radius: 15px;
-            border: 1px solid rgba(255, 100, 100, 0.3);
-            box-shadow: 0 0 20px rgba(255, 100, 100, 0.2);
-            transition: transform 0.3s;
-        }
-        
-        .fundamentals-text:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 0 30px rgba(255, 100, 100, 0.4);
-        }
-        
-        .fundamentals-image {
-            flex: 1;
-            min-width: 300px;
-            height: 350px;
-            background: linear-gradient(135deg, var(--neon-red), var(--neon-orange));
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 5rem;
-            box-shadow: 
-                0 0 20px var(--neon-red),
-                0 0 40px rgba(255, 100, 100, 0.5);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .fundamentals-image::before {
-            content: '';
-            position: absolute;
-            width: 150%;
-            height: 150%;
-            background: conic-gradient(transparent, var(--neon-orange), transparent 30%);
-            animation: rotate 4s linear infinite;
-        }
-        
-        .fundamentals-image::after {
-            content: '';
-            position: absolute;
-            width: calc(100% - 10px);
-            height: calc(100% - 10px);
-            background: var(--dark-bg);
-            border-radius: 15px;
-        }
-        
-        /* Principles Section */
-        .principles {
-            background: rgba(10, 10, 30, 0.7);
-            padding: 80px 0;
-            border-top: 1px solid rgba(255, 200, 50, 0.2);
-            border-bottom: 1px solid rgba(255, 200, 50, 0.2);
-        }
-        
-        .principles-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-        }
-        
-        .principle-card {
-            background: rgba(20, 20, 40, 0.6);
-            padding: 25px;
-            border-radius: 15px;
-            text-align: center;
-            border: 1px solid rgba(255, 100, 100, 0.3);
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .principle-card::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: linear-gradient(45deg, var(--neon-red), var(--neon-orange), var(--neon-red));
-            z-index: -1;
-            border-radius: 16px;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        
-        .principle-card:hover::before {
-            opacity: 1;
-        }
-        
-        .principle-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 10px 25px rgba(255, 100, 100, 0.3);
-        }
-        
-        .principle-icon {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-            color: var(--neon-red);
-            text-shadow: 0 0 10px var(--neon-red);
-        }
-        
-        .principle-card h3 {
-            margin-bottom: 15px;
-            font-size: 1.5rem;
-        }
-        
-        /* Thermometer Types Section */
-        .thermometer-types {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 25px;
-        }
-        
-        .thermometer-card {
-            height: 320px;
-            border-radius: 15px;
-            background: linear-gradient(135deg, var(--neon-red), var(--neon-orange));
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.3s;
-            box-shadow: 0 0 15px rgba(255, 100, 100, 0.3);
-            padding: 20px;
-            text-align: center;
-        }
-        
-        .thermometer-card::before {
-            content: '';
-            position: absolute;
-            width: 150%;
-            height: 150%;
-            background: conic-gradient(transparent, var(--neon-red), transparent 30%);
-            animation: rotate 5s linear infinite;
-        }
-        
-        .thermometer-card::after {
-            content: '';
-            position: absolute;
-            width: calc(100% - 8px);
-            height: calc(100% - 8px);
-            background: var(--dark-bg);
-            border-radius: 12px;
-        }
-        
-        .thermometer-card:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 25px rgba(255, 100, 100, 0.6);
-        }
-        
-        .thermometer-content {
-            z-index: 1;
-            position: relative;
-        }
-        
-        .thermometer-card i {
-            font-size: 3rem;
-            margin-bottom: 15px;
-        }
-        
-        /* Interactive Section */
-        .interactive-section {
-            background: rgba(10, 10, 30, 0.7);
-            padding: 80px 0;
-        }
-        
-        .interactive-content {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 40px;
-            align-items: center;
-        }
-        
-        .simulation {
-            flex: 1;
-            min-width: 300px;
-            background: rgba(20, 20, 40, 0.6);
-            padding: 30px;
-            border-radius: 15px;
-            border: 1px solid rgba(255, 100, 100, 0.3);
-            box-shadow: 0 0 20px rgba(255, 100, 100, 0.2);
-        }
-        
-        .thermometer-sim {
-            width: 80px;
-            height: 300px;
-            background: linear-gradient(to top, var(--neon-blue), var(--neon-yellow), var(--neon-red));
-            border-radius: 40px;
-            margin: 0 auto 20px;
-            position: relative;
-            border: 3px solid #444;
-            box-shadow: 0 0 15px rgba(255, 100, 100, 0.5);
-        }
-        
-        .mercury {
-            width: 100%;
-            height: 50%;
-            background: var(--neon-red);
-            border-radius: 40px;
-            position: absolute;
-            bottom: 0;
-            transition: height 1s;
-            box-shadow: 0 0 10px var(--neon-red);
-        }
-        
-        .temperature-control {
-            margin-top: 20px;
-            text-align: center;
-        }
-        
-        .temp-display {
-            font-size: 2rem;
-            margin: 15px 0;
-        }
-        
-        .chart-container {
-            flex: 1;
-            min-width: 300px;
-            background: rgba(20, 20, 40, 0.6);
-            padding: 30px;
-            border-radius: 15px;
-            border: 1px solid rgba(255, 100, 100, 0.3);
-            box-shadow: 0 0 20px rgba(255, 100, 100, 0.2);
-        }
-        
-        /* Formulas Section */
-        .formulas-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-        }
-        
-        .formula-card {
-            background: rgba(20, 20, 40, 0.6);
-            padding: 25px;
-            border-radius: 15px;
-            border: 1px solid rgba(255, 200, 50, 0.3);
-            transition: all 0.3s;
-        }
-        
-        .formula-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(255, 200, 50, 0.2);
-        }
-        
-        .formula-icon {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-            color: var(--neon-yellow);
-            text-shadow: 0 0 10px var(--neon-yellow);
-        }
-        
-        .formula-card h3 {
-            margin-bottom: 15px;
-            font-size: 1.5rem;
-        }
-        
-        .formula {
-            font-family: 'Courier New', monospace;
-            font-size: 1.2rem;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 3px solid var(--neon-yellow);
-            margin: 15px 0;
-        }
-        
-        /* Footer */
-        footer {
-            background: rgba(10, 10, 22, 0.9);
-            padding: 40px 0;
-            text-align: center;
-            border-top: 1px solid rgba(255, 100, 100, 0.3);
-            box-shadow: 0 -5px 15px rgba(255, 100, 100, 0.2);
-        }
-        
-        .social-links {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin: 20px 0;
-        }
-        
-        .social-link {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: rgba(20, 20, 40, 0.8);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            font-size: 1.5rem;
-            text-decoration: none;
-            transition: all 0.3s;
-            border: 1px solid rgba(255, 100, 100, 0.3);
-        }
-        
-        .social-link:hover {
-            background: rgba(255, 100, 100, 0.2);
-            box-shadow: 0 0 15px rgba(255, 100, 100, 0.7);
-            transform: translateY(-5px);
-        }
-        
-        .copyright {
-            margin-top: 20px;
-            color: #888;
-            font-size: 0.9rem;
-        }
-        
-        /* Animaciones */
-        @keyframes rotate {
-            from {
-                transform: rotate(0deg);
-            }
-            to {
-                transform: rotate(360deg);
-            }
-        }
-        
-        /* Responsive */
-        @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                gap: 15px;
-            }
-            
-            nav ul {
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-            
-            .hero h1 {
-                font-size: 2.2rem;
-            }
-            
-            .hero-image {
-                width: 180px;
-                height: 180px;
-            }
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rosa roja animada — Te amo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Great+Vibes&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#000;
+      --neon:#b26bff; /* morado neón */
+      --rose-size: min(40vh, 360px);
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+    body{
+      background: radial-gradient(circle at 50% 45%, rgba(120,20,120,0.08), transparent 20%), linear-gradient(#000,#050505 60%);
+      display:flex;align-items:center;justify-content:center;flex-direction:column;
+      font-family: 'Montserrat', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+      color:white;overflow:hidden
+    }
+
+    /* Halo animado detrás de la rosa */
+    .halo{
+      position:absolute;left:50%;top:45%;transform:translate(-50%,-50%);
+      width: calc(var(--rose-size) * 1.6);height: calc(var(--rose-size) * 1.6);
+      border-radius:50%;
+      background: radial-gradient(circle at 50% 40%, rgba(178,107,255,0.16), rgba(255,50,80,0.06) 40%, transparent 60%);
+      filter:blur(28px) saturate(120%);
+      animation: haloPulse 4s ease-in-out infinite;
+      z-index:0;
+    }
+
+    @keyframes haloPulse{
+      0%{transform:translate(-50%,-50%) scale(0.96);opacity:0.85}
+      50%{transform:translate(-50%,-50%) scale(1.06);opacity:1}
+      100%{transform:translate(-50%,-50%) scale(0.96);opacity:0.85}
+    }
+
+    .container{
+      position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:18px;padding:32px;
+    }
+
+    /* La "rosa" — usamos emoji para un estilo simple y fiable */
+    .rose{
+      font-size:var(--rose-size);
+      line-height:1;
+      transform-origin:center center;
+      text-shadow:
+        0 6px 18px rgba(0,0,0,0.7),
+        0 0 18px rgba(255,30,70,0.12);
+      animation: roseSway 3.6s ease-in-out infinite, rosePulse 2.8s ease-in-out infinite;
+      user-select:none;
+      filter: drop-shadow(0 20px 30px rgba(0,0,0,0.6));
+    }
+
+    @keyframes rosePulse{
+      0%{transform:translateY(0) scale(0.98) rotate(-2deg)}
+      45%{transform:translateY(-6px) scale(1.04) rotate(2deg)}
+      100%{transform:translateY(0) scale(0.98) rotate(-2deg)}
+    }
+    @keyframes roseSway{
+      0%{filter: drop-shadow(0 18px 26px rgba(0,0,0,0.6))}
+      50%{filter: drop-shadow(0 32px 36px rgba(0,0,0,0.65))}
+      100%{filter: drop-shadow(0 18px 26px rgba(0,0,0,0.6))}
+    }
+
+    /* Texto "Te amo" en neón morado */
+    .te-amo{
+      font-family: 'Great Vibes', cursive;
+      font-size: clamp(28px, 6vw, 56px);
+      color: var(--neon);
+      letter-spacing: 1px;
+      text-transform: none;
+      text-shadow:
+        0 0 6px rgba(178,107,255,0.9),
+        0 0 18px rgba(178,107,255,0.7),
+        0 6px 30px rgba(0,0,0,0.65);
+      transform: translateY(6px);
+      animation: neonFlicker 3.6s linear infinite;
+      z-index:2;
+    }
+
+    @keyframes neonFlicker{
+      0%, 19%, 21%, 23%, 100%{opacity:1;filter:brightness(1)}
+      20%{opacity:0.85;filter:brightness(0.85)}
+      22%{opacity:0.6;filter:brightness(0.7)}
+    }
+
+    /* Pequeño detalle: línea separadora en glow */
+    .line{
+      width:160px;height:2px;background:linear-gradient(90deg, transparent, rgba(178,107,255,0.6), transparent);
+      filter:blur(2px);opacity:0.9;margin-top:6px;border-radius:4px;
+    }
+
+    /* Ajustes móviles */
+    @media (max-width:520px){
+      :root{--rose-size: min(36vw,220px)}
+      .halo{width:calc(var(--rose-size) *1.8);height:calc(var(--rose-size)*1.8)}
+    }
+  </style>
 </head>
 <body>
-    <!-- Header -->
-    <header>
-        <div class="container">
-            <div class="header-content">
-                <div class="logo neon-text">TERMOMETRÍA FÍSICA</div>
-                <nav>
-                    <ul>
-                        <li><a href="#inicio" class="neon-orange">Inicio</a></li>
-                        <li><a href="#fundamentos" class="neon-yellow">Fundamentos</a></li>
-                        <li><a href="#principios" class="neon-blue">Principios</a></li>
-                        <li><a href="#tipos" class="neon-cyan">Tipos Físicos</a></li>
-                        <li><a href="#interactivo" class="neon-orange">Simulación</a></li>
-                    </ul>
-                </nav>
-            </div>
-        </div>
-    </header>
-
-    <!-- Hero Section -->
-    <section class="hero" id="inicio">
-        <div class="container">
-            <div class="hero-content">
-                <div class="hero-image">
-                    <i class="fas fa-atom"></i>
-                </div>
-                <h1 class="neon-text">TERMOMETRÍA FÍSICA</h1>
-                <p class="neon-orange">Estudio de los principios físicos fundamentales detrás de la medición de temperatura y el comportamiento térmico de la materia.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Fundamentals Section -->
-    <section id="fundamentos">
-        <div class="container">
-            <h2 class="section-title neon-text">Fundamentos Físicos</h2>
-            <div class="fundamentals-content">
-                <div class="fundamentals-text">
-                    <h3 class="neon-orange">La Naturaleza Física de la Temperatura</h3>
-                    <p>La termometría física se basa en el estudio de las propiedades termométricas de la materia, que son aquellas propiedades físicas que varían de forma predecible con la temperatura.</p>
-                    <p>Estas propiedades incluyen la dilatación térmica, la resistencia eléctrica, la fuerza electromotriz termoeléctrica, la radiación térmica y muchas otras que permiten medir la temperatura indirectamente.</p>
-                    <p>El principio fundamental establece que para cualquier propiedad termométrica X, existe una relación funcional con la temperatura T: T = f(X), donde f es una función que debe determinarse experimentalmente.</p>
-                </div>
-                <div class="fundamentals-image">
-                    <i class="fas fa-microscope"></i>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Principles Section -->
-    <section class="principles" id="principios">
-        <div class="container">
-            <h2 class="section-title neon-text">Principios Físicos de la Termometría</h2>
-            <div class="principles-grid">
-                <div class="principle-card">
-                    <div class="principle-icon">
-                        <i class="fas fa-expand-arrows-alt"></i>
-                    </div>
-                    <h3 class="neon-yellow">Dilatación Térmica</h3>
-                    <p>Fenómeno físico por el cual los materiales cambian sus dimensiones en respuesta a cambios de temperatura. Base de los termómetros de líquido en vidrio.</p>
-                </div>
-                <div class="principle-card">
-                    <div class="principle-icon">
-                        <i class="fas fa-bolt"></i>
-                    </div>
-                    <h3 class="neon-blue">Efecto Termoeléctrico</h3>
-                    <p>Generación de fuerza electromotriz en un circuito compuesto por dos metales diferentes cuyas uniones están a diferentes temperaturas.</p>
-                </div>
-                <div class="principle-card">
-                    <div class="principle-icon">
-                        <i class="fas fa-resistance"></i>
-                    </div>
-                    <h3 class="neon-cyan">Variación de Resistividad</h3>
-                    <p>Cambio en la resistencia eléctrica de los materiales con la temperatura. Fundamental en termómetros de resistencia (RTD) y termistores.</p>
-                </div>
-                <div class="principle-card">
-                    <div class="principle-icon">
-                        <i class="fas fa-radiation"></i>
-                    </div>
-                    <h3 class="neon-orange">Radiación Térmica</h3>
-                    <p>Emisión de radiación electromagnética por los cuerpos debido a su temperatura. Principio de los pirómetros y termómetros infrarrojos.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Thermometer Types Section -->
-    <section id="tipos">
-        <div class="container">
-            <h2 class="section-title neon-text">Termómetros Basados en Principios Físicos</h2>
-            <div class="thermometer-types">
-                <div class="thermometer-card">
-                    <div class="thermometer-content">
-                        <i class="fas fa-temperature-high"></i>
-                        <h3 class="neon-yellow">Termómetro de Gas</h3>
-                        <p>Basado en la ley de los gases ideales: PV = nRT. Considerado el más preciso para mediciones fundamentales.</p>
-                    </div>
-                </div>
-                <div class="thermometer-card">
-                    <div class="thermometer-content">
-                        <i class="fas fa-plug"></i>
-                        <h3 class="neon-blue">Termopar</h3>
-                        <p>Utiliza el efecto Seebeck: genera voltaje proporcional a la diferencia de temperatura entre dos uniones metálicas.</p>
-                    </div>
-                </div>
-                <div class="thermometer-card">
-                    <div class="thermometer-content">
-                        <i class="fas fa-resistor"></i>
-                        <h3 class="neon-cyan">RTD (Pt100)</h3>
-                        <p>Detector de temperatura por resistencia, generalmente de platino. Alta precisión y estabilidad: R = R₀[1 + α(T - T₀)].</p>
-                    </div>
-                </div>
-                <div class="thermometer-card">
-                    <div class="thermometer-content">
-                        <i class="fas fa-infinity"></i>
-                        <h3 class="neon-orange">Termistor</h3>
-                        <p>Resistor semiconductor cuya resistencia varía marcadamente con la temperatura: R = R₀ exp[β(1/T - 1/T₀)].</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Interactive Section -->
-    <section class="interactive-section" id="interactivo">
-        <div class="container">
-            <h2 class="section-title neon-text">Simulación y Análisis</h2>
-            <div class="interactive-content">
-                <div class="simulation">
-                    <h3 class="neon-yellow" style="text-align: center; margin-bottom: 20px;">Simulador de Dilatación Térmica</h3>
-                    <div class="thermometer-sim">
-                        <div class="mercury" id="mercury"></div>
-                    </div>
-                    <div class="temp-display neon-text" id="tempDisplay">25°C</div>
-                    <div class="temperature-control">
-                        <input type="range" min="-20" max="100" value="25" class="slider" id="tempSlider">
-                    </div>
-                    <p class="neon-orange" style="margin-top: 15px; text-align: center;">ΔL = α · L₀ · ΔT</p>
-                    <p class="neon-blue" style="text-align: center;">Ley de dilatación lineal</p>
-                </div>
-                <div class="chart-container">
-                    <h3 class="neon-cyan" style="text-align: center; margin-bottom: 20px;">Comportamiento de Materiales</h3>
-                    <canvas id="materialChart"></canvas>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Formulas Section -->
-    <section>
-        <div class="container">
-            <h2 class="section-title neon-text">Ecuaciones Fundamentales</h2>
-            <div class="formulas-grid">
-                <div class="formula-card">
-                    <div class="formula-icon">
-                        <i class="fas fa-ruler"></i>
-                    </div>
-                    <h3 class="neon-yellow">Dilatación Lineal</h3>
-                    <div class="formula">ΔL = α · L₀ · ΔT</div>
-                    <p>Donde α es el coeficiente de dilatación lineal, L₀ la longitud inicial y ΔT el cambio de temperatura.</p>
-                </div>
-                <div class="formula-card">
-                    <div class="formula-icon">
-                        <i class="fas fa-gas-pump"></i>
-                    </div>
-                    <h3 class="neon-blue">Ley de los Gases Ideales</h3>
-                    <div class="formula">P · V = n · R · T</div>
-                    <p>Base de los termómetros de gas a volumen constante: T = (P/P₀) · T₀</p>
-                </div>
-                <div class="formula-card">
-                    <div class="formula-icon">
-                        <i class="fas fa-bolt"></i>
-                    </div>
-                    <h3 class="neon-cyan">Efecto Seebeck</h3>
-                    <div class="formula">V = S · ΔT</div>
-                    <p>Donde V es el voltaje generado, S el coeficiente Seebeck y ΔT la diferencia de temperatura.</p>
-                </div>
-                <div class="formula-card">
-                    <div class="formula-icon">
-                        <i class="fas fa-resistance"></i>
-                    </div>
-                    <h3 class="neon-orange">Variación de Resistencia</h3>
-                    <div class="formula">Rₜ = R₀[1 + α(T - T₀)]</div>
-                    <p>Para metales (RTD), donde α es el coeficiente de temperatura de la resistencia.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="logo neon-text">TERMOMETRÍA FÍSICA</div>
-            <p class="neon-orange">Comprendiendo los principios físicos de la temperatura</p>
-            <div class="social-links">
-                <a href="#" class="social-link neon-orange"><i class="fab fa-twitter"></i></a>
-                <a href="#" class="social-link neon-yellow"><i class="fab fa-youtube"></i></a>
-                <a href="#" class="social-link neon-blue"><i class="fab fa-github"></i></a>
-                <a href="#" class="social-link neon-cyan"><i class="fab fa-linkedin"></i></a>
-            </div>
-            <p class="copyright">© 2023 Termometría Física - Todos los derechos reservados</p>
-        </div>
-    </footer>
-
-    <script>
-        // Efecto de partículas para el fondo
-        document.addEventListener('DOMContentLoaded', function() {
-            const colors = ['#ff3333', '#ff7700', '#ffff00', '#00a2ff', '#00ffff'];
-            
-            function createParticle() {
-                const particle = document.createElement('div');
-                particle.style.position = 'fixed';
-                particle.style.width = Math.random() * 5 + 2 + 'px';
-                particle.style.height = particle.style.width;
-                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
-                particle.style.borderRadius = '50%';
-                particle.style.left = Math.random() * 100 + 'vw';
-                particle.style.top = '-10px';
-                particle.style.opacity = Math.random() * 0.7 + 0.3;
-                particle.style.boxShadow = `0 0 ${Math.random() * 10 + 5}px ${particle.style.background}`;
-                particle.style.zIndex = '-1';
-                document.body.appendChild(particle);
-                
-                const animation = particle.animate([
-                    { transform: 'translateY(0)', opacity: particle.style.opacity },
-                    { transform: `translateY(${window.innerHeight + 20}px)`, opacity: 0 }
-                ], {
-                    duration: Math.random() * 3000 + 2000,
-                    easing: 'linear'
-                });
-                
-                animation.onfinish = () => {
-                    particle.remove();
-                };
-            }
-            
-            // Crear partículas periódicamente
-            setInterval(createParticle, 200);
-            
-            // Efecto de iluminación al pasar el cursor sobre los enlaces
-            const links = document.querySelectorAll('a');
-            links.forEach(link => {
-                link.addEventListener('mouseenter', function() {
-                    this.style.textShadow = '0 0 10px currentColor';
-                });
-                link.addEventListener('mouseleave', function() {
-                    this.style.textShadow = '';
-                });
-            });
-            
-            // Termómetro interactivo
-            const tempSlider = document.getElementById('tempSlider');
-            const mercury = document.getElementById('mercury');
-            const tempDisplay = document.getElementById('tempDisplay');
-            
-            tempSlider.addEventListener('input', function() {
-                const temp = parseInt(this.value);
-                // Ajustar altura del mercurio (de 10% a 90% del termómetro)
-                const height = 10 + (temp + 20) * 0.666;
-                mercury.style.height = Math.min(Math.max(height, 10), 90) + '%';
-                tempDisplay.textContent = temp + '°C';
-                
-                // Cambiar color según la temperatura
-                if (temp < 0) {
-                    mercury.style.background = '#00a2ff';
-                    tempDisplay.className = 'temp-display neon-blue';
-                } else if (temp < 20) {
-                    mercury.style.background = '#00ffff';
-                    tempDisplay.className = 'temp-display neon-cyan';
-                } else if (temp < 40) {
-                    mercury.style.background = '#ffff00';
-                    tempDisplay.className = 'temp-display neon-yellow';
-                } else {
-                    mercury.style.background = '#ff3333';
-                    tempDisplay.className = 'temp-display neon-text';
-                }
-            });
-            
-            // Gráfico de comportamiento de materiales
-            const ctx = document.getElementById('materialChart').getContext('2d');
-            const materialChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['-50', '0', '50', '100', '150', '200', '250', '300'],
-                    datasets: [
+  <div class="halo" aria-hidden="true"></div>
+  <div class="container">
+    <div class="rose" aria-hidden="false">🌹</div>
+    <div class="te-amo">Te amo</div>
+    <div class="line" aria-hidden="true"></div>
+  </div>
+</body>
+</html>
